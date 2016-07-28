@@ -9,6 +9,7 @@ use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\WorkerJob;
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
+use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 
@@ -40,5 +41,20 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
         }
 
         return new WorkerJob($job);
+    }
+
+    protected function finishJob(Job $job)
+    {
+        if (!$job instanceof WorkerJob) {
+            throw new WrongJobException('Doctrine delay runner should only finish doctrine delay jobs');
+        }
+
+        $args = $job->getArguments();
+        if (!isset($args['job'])) {
+            throw new WrongJobException('Missing doctrine delay job');
+        }
+
+        $job = $args['job'];
+        $this->queueManager->delete($job);
     }
 }

@@ -4,6 +4,7 @@
  */
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Worker;
 
+use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Worker;
@@ -32,6 +33,15 @@ class DoctrineDelayWorker implements Worker
      */
     public function execute(array $arguments)
     {
-        $this->queueManagerRegistry->put($arguments['name'], $arguments['arguments'], $arguments['options'], $arguments['manager']);
+        if (!isset($arguments['job'])) {
+            throw new UnrecoverableJobException('Missing doctrine delay job');
+        }
+
+        $job = $arguments['job'];
+        if (!$job instanceof DoctrineDelayJob) {
+            throw new UnrecoverableJobException('Invalid job');
+        }
+
+        $this->queueManagerRegistry->put($job->getName(), $job->getArguments(), $job->getOptions(), $job->getManager());
     }
 }
