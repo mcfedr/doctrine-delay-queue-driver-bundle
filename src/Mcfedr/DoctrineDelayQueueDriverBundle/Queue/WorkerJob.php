@@ -2,8 +2,9 @@
 /**
  * Created by mcfedr on 7/28/16 10:29
  */
-namespace Mcfedr\DoctrineDelayQueueDriverBundle\Entity;
+namespace Mcfedr\DoctrineDelayQueueDriverBundle\Queue;
 
+use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\QueueManagerBundle\Queue\AbstractJob;
 
 class WorkerJob extends AbstractJob

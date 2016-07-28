@@ -6,7 +6,7 @@ namespace Mcfedr\DoctrineDelayQueueDriverBundle\Command;
 
 use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayTrait;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
-use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\WorkerJob;
+use Mcfedr\DoctrineDelayQueueDriverBundle\Queue\WorkerJob;
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
 use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
