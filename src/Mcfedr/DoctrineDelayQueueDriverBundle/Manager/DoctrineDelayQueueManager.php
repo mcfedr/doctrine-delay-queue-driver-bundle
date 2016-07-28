@@ -36,7 +36,7 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
         if (array_key_exists('manager_options', $options)) {
             $jobOptions = array_merge($this->defaultManagerOptions, $options['manager_options']);
         } else {
-            $jobOptions = $this->defaultManagerOptions;
+            $jobOptions = array_merge($this->defaultManagerOptions, array_diff_key($options, ['manager' => 1, 'time' => 1]));
         }
 
         if (array_key_exists('manager', $options)) {
