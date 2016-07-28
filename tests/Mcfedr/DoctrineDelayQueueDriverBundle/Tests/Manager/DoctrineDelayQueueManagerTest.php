@@ -161,4 +161,12 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->manager->delete($toDelete);
     }
+
+    /**
+     * @expectedException \Mcfedr\QueueManagerBundle\Exception\WrongJobException
+     */
+    public function testDeleteOther()
+    {
+        $this->manager->delete($this->getMockBuilder(Job::class)->getMock());
+    }
 }
