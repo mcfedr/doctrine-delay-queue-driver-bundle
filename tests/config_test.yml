@@ -1,0 +1,39 @@
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    secret: 'fake_secret'
+
+doctrine:
+    dbal:
+        driver: pdo_sqlite
+        dbname: "doctrine_delay"
+        charset: UTF8
+        mapping_types:
+            enum: string
+        path: "%kernel.root_dir%/cache/test/db.sqlite"
+        logging: false
+        profiling: false
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
+
+mcfedr_queue_manager:
+    managers:
+        default:
+            driver: doctrine_delay
+            options:
+                debug: true
+
+monolog:
+    handlers:
+        main:
+            type: console
+            verbosity_levels:
+                VERBOSITY_NORMAL: DEBUG
+
+services:
+    test_worker:
+        class: Mcfedr\DoctrineDelayQueueDriverBundle\Worker\TestWorker
+        arguments:
+            - "@logger"
