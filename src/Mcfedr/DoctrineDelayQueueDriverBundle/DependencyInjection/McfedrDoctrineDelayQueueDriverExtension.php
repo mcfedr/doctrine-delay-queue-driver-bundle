@@ -46,7 +46,7 @@ class McfedrDoctrineDelayQueueDriverExtension extends Extension implements Prepe
                         'class' => DoctrineDelayQueueManager::class,
                         'options' => [
                             'entity_manager' => null,
-                            'default_manager' => 'default',
+                            'default_manager' => null,
                             'default_manager_options' => []
                         ],
                         'command_class' => DoctrineDelayRunnerCommand::class
