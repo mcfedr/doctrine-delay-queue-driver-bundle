@@ -45,10 +45,10 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
             $jobManager = $this->defaultManager;
         }
 
-        if (array_key_exists('time', $options)) {
+        if (isset($options['time'])) {
             $jobTime = $options['time'];
         } else {
-            $jobTime = new \DateTime();
+            return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }
 
         $job = new DoctrineDelayJob($name, $arguments, $jobOptions, $jobManager, $jobTime);

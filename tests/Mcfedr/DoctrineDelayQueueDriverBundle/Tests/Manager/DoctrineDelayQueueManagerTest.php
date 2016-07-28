@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayQueueManager;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
+use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
+use Mcfedr\QueueManagerBundle\Queue\Job;
 use Symfony\Component\DependencyInjection\Container;
 
 class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
@@ -22,6 +24,9 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
 
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $entityManager;
+
+    /** @var Container */
+    private $container;
 
     public function setUp()
     {
@@ -44,10 +49,10 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->with(null)
             ->willReturn($this->entityManager);
 
-        $container = new Container();
-        $container->set('doctrine', $doctrine);
+        $this->container = new Container();
+        $this->container->set('doctrine', $doctrine);
 
-        $this->manager->setContainer($container);
+        $this->manager->setContainer($this->container);
     }
 
     public function testPut()
@@ -60,9 +65,27 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('flush');
 
-        $job = $this->manager->put('test_worker');
+        $job = $this->manager->put('test_worker', [], ['time' => new \DateTime()]);
 
         $this->assertEquals('test_worker', $job->getName());
+    }
+
+    public function testPutFast()
+    {
+        $job = $this->getMockBuilder(Job::class)->getMock();
+
+        $registry = $this->getMockBuilder(QueueManagerRegistry::class)->disableOriginalConstructor()->getMock();
+        $registry
+            ->expects($this->once())
+            ->method('put')
+            ->with('test_worker', [])
+            ->willReturn($job);
+
+        $this->container->set('mcfedr_queue_manager.registry', $registry);
+
+        $putJob = $this->manager->put('test_worker', []);
+
+        $this->assertEquals($job, $putJob);
     }
 
     public function testDelete()

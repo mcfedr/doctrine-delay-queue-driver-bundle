@@ -5,13 +5,23 @@
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Worker;
 
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
+use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Worker;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class DoctrineDelayWorker implements Worker, ContainerAwareInterface
+class DoctrineDelayWorker implements Worker
 {
-    use ContainerAwareTrait;
+    /**
+     * @var QueueManagerRegistry
+     */
+    private $queueManagerRegistry;
+
+    /**
+     * @param QueueManagerRegistry $queueManagerRegistry
+     */
+    public function __construct(QueueManagerRegistry $queueManagerRegistry)
+    {
+        $this->queueManagerRegistry = $queueManagerRegistry;
+    }
 
     /**
      * Called to start the queued task
@@ -22,6 +32,6 @@ class DoctrineDelayWorker implements Worker, ContainerAwareInterface
      */
     public function execute(array $arguments)
     {
-        $this->container->get("mcfedr_queue_manager.{$arguments['manager']}")->put($arguments['name'], $arguments['arguments'], $arguments['options']);
+        $this->queueManagerRegistry->put($arguments['name'], $arguments['arguments'], $arguments['options'], $arguments['manager']);
     }
 }

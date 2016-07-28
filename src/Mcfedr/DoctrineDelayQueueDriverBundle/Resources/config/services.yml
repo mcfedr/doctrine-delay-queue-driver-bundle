@@ -1,5 +1,5 @@
 services:
     mcfedr_doctrine_delay_queue_driver.worker:
         class: Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker
-        calls:
-            - [setContainer, ["@service_container"]]
+        arguments:
+            - "@mcfedr_queue_manager.registry"
