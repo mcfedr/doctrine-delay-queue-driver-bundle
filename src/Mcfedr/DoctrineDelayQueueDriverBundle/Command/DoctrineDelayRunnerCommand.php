@@ -9,7 +9,6 @@ use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Queue\WorkerJob;
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
-use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 
@@ -27,34 +26,29 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
      * @throws UnexpectedJobDataException
      * @return Job
      */
-    protected function getJob()
+    protected function getJobs()
     {
-        $job = $this->getEntityManager()->getRepository(DoctrineDelayJob::class)->createQueryBuilder('job')
+        return array_map(function(DoctrineDelayJob $job) {
+            return new WorkerJob($job);
+        }, $this->getEntityManager()->getRepository(DoctrineDelayJob::class)->createQueryBuilder('job')
             ->andWhere('job.time < :now')
             ->setParameter('now', new \DateTime())
             ->orderBy('job.time', 'ASC')
-            ->setMaxResults(1)
+            ->setMaxResults(20)
             ->getQuery()
-            ->getOneOrNullResult();
-        if (!$job) {
-            return null;
-        }
-
-        return new WorkerJob($job);
+            ->getResult());
     }
 
-    protected function finishJob(Job $job)
+    protected function finishJobs(array $okJobs, array $retryJobs, array $failedJobs)
     {
-        if (!$job instanceof WorkerJob) {
-            throw new WrongJobException('Doctrine delay runner should only finish doctrine delay jobs');
+        /** @var WorkerJob $job */
+        foreach ($okJobs as $job) {
+            $this->queueManager->delete($job->getDelayJob());
         }
 
-        $args = $job->getArguments();
-        if (!isset($args['job'])) {
-            throw new WrongJobException('Missing doctrine delay job');
+        /** @var WorkerJob $job */
+        foreach ($failedJobs as $job) {
+            $this->queueManager->delete($job->getDelayJob());
         }
-
-        $job = $args['job'];
-        $this->queueManager->delete($job);
     }
 }
