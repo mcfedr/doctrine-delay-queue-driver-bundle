@@ -75,11 +75,7 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
 
         $em = $this->getEntityManager();
         if (!$em->contains($job)) {
-            $id = $job->getId();
-            $job = $em->getRepository(DoctrineDelayJob::class)->find($id);
-            if (!$job) {
-                throw new NoSuchJobException("No job with the id $id");
-            }
+            $job = $em->getReference(DoctrineDelayJob::class, $job->getId());
         }
 
         $em->remove($job);

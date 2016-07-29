@@ -98,22 +98,22 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->with($toDelete)
             ->willReturn(false);
 
-        $fromRepo = new DoctrineDelayJob('test_worker', [], [], 'default', new \DateTime());
+        $reference = 1;
 
-        $this->repo
+        $this->entityManager
             ->expects($this->once())
-            ->method('find')
-            ->willReturn($fromRepo);
+            ->method('getReference')
+            ->willReturn($reference);
 
         $this->entityManager
             ->expects($this->once())
             ->method('remove')
-            ->with($fromRepo);
+            ->with($reference);
 
         $this->entityManager
             ->expects($this->once())
             ->method('flush')
-            ->with($fromRepo);
+            ->with($reference);
 
         $this->manager->delete($toDelete);
     }
@@ -137,27 +137,6 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('flush')
             ->with($toDelete);
-
-        $this->manager->delete($toDelete);
-    }
-
-    /**
-     * @expectedException \Mcfedr\QueueManagerBundle\Exception\NoSuchJobException
-     */
-    public function testInvalidDelete()
-    {
-        $toDelete = new DoctrineDelayJob('test_worker', [], [], 'default', new \DateTime());
-
-        $this->entityManager
-            ->expects($this->once())
-            ->method('contains')
-            ->with($toDelete)
-            ->willReturn(false);
-
-        $this->repo
-            ->expects($this->once())
-            ->method('find')
-            ->willReturn(null);
 
         $this->manager->delete($toDelete);
     }
