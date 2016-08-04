@@ -38,9 +38,4 @@ class WorkerJob implements Job
             'job' => $this->delayJob
         ];
     }
-
-    public function getOptions()
-    {
-        return [];
-    }
 }
