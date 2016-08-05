@@ -46,6 +46,7 @@ This will create a `QueueManager` service named `"mcfedr_queue_manager.delay"`
 ## Options to `QueueManager::put`
 
 * `time` - A `\DateTime` object of when to schedule this job
+* `delay` - Number of seconds from now to schedule this job
 * `manager` - Use a different job processor for this job
 * `manager_options` - Options to pass to the processors `put` method
 

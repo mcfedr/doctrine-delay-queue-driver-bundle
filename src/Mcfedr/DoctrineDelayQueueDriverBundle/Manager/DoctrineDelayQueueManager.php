@@ -36,7 +36,7 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
         if (array_key_exists('manager_options', $options)) {
             $jobOptions = array_merge($this->defaultManagerOptions, $options['manager_options']);
         } else {
-            $jobOptions = array_merge($this->defaultManagerOptions, array_diff_key($options, ['manager' => 1, 'time' => 1]));
+            $jobOptions = array_merge($this->defaultManagerOptions, array_diff_key($options, ['manager' => 1, 'time' => 1, 'delay' => 1]));
         }
 
         if (array_key_exists('manager', $options)) {
@@ -52,6 +52,8 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
                 $jobTime = clone $jobTime;
                 $jobTime->setTimezone(new \DateTimeZone('UTC'));
             }
+        } else if (isset($options['delay'])) {
+            $jobTime = new \DateTime("+{$options['delay']} seconds", new \DateTimeZone('UTC'));
         } else {
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }
