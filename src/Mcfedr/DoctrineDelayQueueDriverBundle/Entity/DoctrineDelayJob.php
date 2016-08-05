@@ -58,6 +58,13 @@ class DoctrineDelayJob implements Job
     private $time;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
      * @param string $name
      * @param array $arguments
      * @param array $options
@@ -71,6 +78,7 @@ class DoctrineDelayJob implements Job
         $this->options = $options;
         $this->manager = $manager;
         $this->time = $time;
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -119,5 +127,13 @@ class DoctrineDelayJob implements Job
     public function getTime()
     {
         return $this->time;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }
