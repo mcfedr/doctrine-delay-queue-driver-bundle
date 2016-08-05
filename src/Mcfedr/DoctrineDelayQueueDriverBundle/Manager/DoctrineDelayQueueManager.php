@@ -46,7 +46,12 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
         }
 
         if (isset($options['time'])) {
+            /** @var \DateTime $jobTime */
             $jobTime = $options['time'];
+            if ($jobTime->getTimezone()->getName() != 'UTC') {
+                $jobTime = clone $jobTime;
+                $jobTime->setTimezone(new \DateTimeZone('UTC'));
+            }
         } else {
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }

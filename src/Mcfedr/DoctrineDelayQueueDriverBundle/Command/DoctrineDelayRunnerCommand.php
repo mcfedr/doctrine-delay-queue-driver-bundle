@@ -32,7 +32,7 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
             return new WorkerJob($job);
         }, $this->getEntityManager()->getRepository(DoctrineDelayJob::class)->createQueryBuilder('job')
             ->andWhere('job.time < :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new \DateTime(null, new \DateTimeZone('UTC')))
             ->orderBy('job.time', 'ASC')
             ->setMaxResults(20)
             ->getQuery()
