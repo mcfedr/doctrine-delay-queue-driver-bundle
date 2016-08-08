@@ -10,9 +10,9 @@ use Doctrine\ORM\EntityManager;
 trait DoctrineDelayTrait
 {
     /**
-     * @var EntityManager
+     * @var Registry
      */
-    private $entityManager;
+    private $doctrine;
 
     /**
      * @var string
@@ -34,12 +34,10 @@ trait DoctrineDelayTrait
      */
     private function getEntityManager()
     {
-        if (!$this->entityManager) {
-            /** @var Registry $doctrine */
-            $doctrine = $this->container->get('doctrine');
-            $this->entityManager = $doctrine->getManager($this->entityManagerName);
+        if (!$this->doctrine) {
+            $this->doctrine = $this->container->get('doctrine');
         }
-        return $this->entityManager;
+        return $this->doctrine->getManager($this->entityManagerName);
     }
 
     private function setOptions(array $options)
