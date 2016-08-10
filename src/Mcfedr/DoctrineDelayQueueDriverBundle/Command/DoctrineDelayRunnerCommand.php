@@ -16,10 +16,22 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
 {
     use DoctrineDelayTrait;
 
+    /**
+     * @var int
+     */
+    private $batchSize = 20;
+
     public function __construct($name, array $options, QueueManager $queueManager)
     {
         parent::__construct($name, $options, $queueManager);
         $this->setOptions($options);
+    }
+
+    protected function configure()
+    {
+        parent::configure();
+        $this
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 20);
     }
 
     /**
@@ -34,7 +46,7 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
             ->andWhere('job.time < :now')
             ->setParameter('now', new \DateTime(null, new \DateTimeZone('UTC')))
             ->orderBy('job.time', 'ASC')
-            ->setMaxResults(20)
+            ->setMaxResults($this->batchSize)
             ->getQuery()
             ->getResult());
     }
@@ -49,6 +61,13 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
         /** @var WorkerJob $job */
         foreach ($failedJobs as $job) {
             $this->queueManager->delete($job->getDelayJob());
+        }
+    }
+
+    protected function handleInput(InputInterface $input)
+    {
+        if (($batch = $input->getOption('batch-size'))) {
+            $this->batchSize = $batch;
         }
     }
 }
