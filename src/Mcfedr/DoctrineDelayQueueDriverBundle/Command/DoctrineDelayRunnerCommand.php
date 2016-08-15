@@ -4,6 +4,7 @@
  */
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Command;
 
+use Doctrine\DBAL\Types\Type;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayTrait;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Queue\WorkerJob;
@@ -42,34 +43,61 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
      */
     protected function getJobs()
     {
+        $now = new \DateTime(null, new \DateTimeZone('UTC'));
+
+        $em = $this->getEntityManager();
+        $em->getConnection()->beginTransaction();
+
+        $repo = $em->getRepository(DoctrineDelayJob::class);
+
+        $em->getConnection()->executeUpdate('UPDATE DoctrineDelayJob job SET job.processing = TRUE WHERE job.time < :now ORDER BY job.time ASC LIMIT :limit', [
+            'now' => $now,
+            'limit' => $this->batchSize
+        ], [
+            'now' => Type::getType(Type::DATETIME),
+            'limit' => Type::getType(Type::INTEGER)
+        ]);
+
+        $jobs = $repo->createQueryBuilder('job')
+            ->andWhere('job.processing = true')
+            ->getQuery()
+            ->getResult();
+
+        $repo->createQueryBuilder('job')
+            ->delete()
+            ->andWhere('job.processing = true')
+            ->getQuery()
+            ->execute();
+
+        $em->getConnection()->commit();
+
         return array_map(function(DoctrineDelayJob $job) {
             return new WorkerJob($job);
-        }, $this->getEntityManager()->getRepository(DoctrineDelayJob::class)->createQueryBuilder('job')
-            ->andWhere('job.time < :now')
-            ->setParameter('now', new \DateTime(null, new \DateTimeZone('UTC')))
-            ->orderBy('job.time', 'ASC')
-            ->setMaxResults($this->batchSize)
-            ->getQuery()
-            ->getResult());
+        }, $jobs);
     }
 
     protected function finishJobs(array $okJobs, array $retryJobs, array $failedJobs)
     {
-        /** @var WorkerJob $job */
-        foreach ($okJobs as $job) {
-            $this->queueManager->delete($job->getDelayJob());
-        }
+        if (count($retryJobs)) {
+            $em = $this->getEntityManager();
 
-        /** @var WorkerJob $job */
-        foreach ($failedJobs as $job) {
-            $this->queueManager->delete($job->getDelayJob());
+            /** @var WorkerJob $job */
+            foreach ($retryJobs as $job) {
+                $oldJob = $job->getDelayJob();
+                $retryCount = $oldJob->getRetryCount() + 1;
+                $newJob = new DoctrineDelayJob($oldJob->getName(), $oldJob->getArguments(), $oldJob->getOptions(),
+                    $oldJob->getManager(), new \DateTime('+' . $this->getRetryDelaySeconds($retryCount) . ' seconds'), $retryCount);
+                $em->persist($newJob);
+            }
+
+            $em->flush();
         }
     }
 
     protected function handleInput(InputInterface $input)
     {
         if (($batch = $input->getOption('batch-size'))) {
-            $this->batchSize = $batch;
+            $this->batchSize = (int) $batch;
         }
     }
 }

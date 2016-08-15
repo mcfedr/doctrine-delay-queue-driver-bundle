@@ -6,8 +6,9 @@ namespace Mcfedr\DoctrineDelayQueueDriverBundle\Queue;
 
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\QueueManagerBundle\Queue\Job;
+use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 
-class WorkerJob implements Job
+class WorkerJob implements RetryableJob
 {
     /**
      * @var DoctrineDelayJob
@@ -37,5 +38,10 @@ class WorkerJob implements Job
         return [
             'job' => $this->delayJob
         ];
+    }
+
+    public function getRetryCount()
+    {
+        return $this->getDelayJob()->getRetryCount();
     }
 }

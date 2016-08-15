@@ -2,7 +2,9 @@
 
 A driver for [Queue Manager Bundle](https://github.com/mcfedr/queue-manager-bundle) that uses [Doctrine](http://www.doctrine-project.org/) to store delayed jobs
 
-This driver doesnt run jobs, it requres another driver to actually process jobs.  
+This driver doesnt run jobs, it requres another driver to actually process jobs.
+
+It currently **only** works with MySQL as a native query is required to find jobs in a concurrency safe way.
 
 [![Latest Stable Version](https://poser.pugx.org/mcfedr/doctrine-delay-queue-driver-bundle/v/stable.png)](https://packagist.org/packages/mcfedr/doctrine-delay-queue-driver-bundle)
 [![License](https://poser.pugx.org/mcfedr/doctrine-delay-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/doctrine-delay-queue-driver-bundle)

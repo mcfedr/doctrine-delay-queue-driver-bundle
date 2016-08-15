@@ -6,12 +6,16 @@ namespace Mcfedr\DoctrineDelayQueueDriverBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Mcfedr\QueueManagerBundle\Queue\Job;
+use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 
 /**
  * @ORM\Entity
- * @ORM\Table(indexes={@ORM\Index(columns={"time"})})
+ * @ORM\Table(name="DoctrineDelayJob", indexes={
+ *     @ORM\Index(columns={"time"}),
+ *     @ORM\Index(columns={"processing"})
+ * })
  */
-class DoctrineDelayJob implements Job
+class DoctrineDelayJob implements RetryableJob
 {
     /**
      * @var integer
@@ -53,7 +57,7 @@ class DoctrineDelayJob implements Job
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="time", type="datetime")
      */
     private $time;
 
@@ -65,13 +69,27 @@ class DoctrineDelayJob implements Job
     private $createdAt;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="processing", type="boolean")
+     */
+    private $processing = false;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer")
+     */
+    private $retryCount;
+
+    /**
      * @param string $name
      * @param array $arguments
      * @param array $options
      * @param string $manager
      * @param \DateTime $time
      */
-    public function __construct($name, array $arguments, array $options, $manager, \DateTime $time)
+    public function __construct($name, array $arguments, array $options, $manager, \DateTime $time, $retryCount = 0)
     {
         $this->name = $name;
         $this->arguments = $arguments;
@@ -79,6 +97,7 @@ class DoctrineDelayJob implements Job
         $this->manager = $manager;
         $this->time = $time;
         $this->createdAt = new \DateTime();
+        $this->retryCount = $retryCount;
     }
 
     /**
@@ -135,5 +154,15 @@ class DoctrineDelayJob implements Job
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Used to count retries
+     *
+     * @return int
+     */
+    public function getRetryCount()
+    {
+        return $this->retryCount;
     }
 }
