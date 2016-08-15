@@ -86,7 +86,7 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
                 $oldJob = $job->getDelayJob();
                 $retryCount = $oldJob->getRetryCount() + 1;
                 $newJob = new DoctrineDelayJob($oldJob->getName(), $oldJob->getArguments(), $oldJob->getOptions(),
-                    $oldJob->getManager(), new \DateTime('+' . $this->getRetryDelaySeconds($retryCount) . ' seconds'), $retryCount);
+                    $oldJob->getManager(), new \DateTime(sprintf('+%d seconds', $this->getRetryDelaySeconds($retryCount))), $retryCount);
                 $em->persist($newJob);
             }
 
