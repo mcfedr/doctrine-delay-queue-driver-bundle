@@ -4,6 +4,7 @@
  */
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Command;
 
+use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Types\Type;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayTrait;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
@@ -46,39 +47,47 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
      */
     protected function getJobs()
     {
-        $now = new \DateTime(null, new \DateTimeZone('UTC'));
+        try {
+            $now = new \DateTime(null, new \DateTimeZone('UTC'));
 
-        $em = $this->getEntityManager();
-        $em->getConnection()->beginTransaction();
+            $em = $this->getEntityManager();
+            $em->getConnection()->beginTransaction();
 
-        $repo = $em->getRepository(DoctrineDelayJob::class);
+            $repo = $em->getRepository(DoctrineDelayJob::class);
 
-        $orderDir = $this->reverse ? 'DESC' : 'ASC';
+            $orderDir = $this->reverse ? 'DESC' : 'ASC';
 
-        $em->getConnection()->executeUpdate("UPDATE DoctrineDelayJob job SET job.processing = TRUE WHERE job.time < :now ORDER BY job.time $orderDir LIMIT :limit", [
-            'now' => $now,
-            'limit' => $this->batchSize
-        ], [
-            'now' => Type::getType(Type::DATETIME),
-            'limit' => Type::getType(Type::INTEGER)
-        ]);
+            $em->getConnection()->executeUpdate("UPDATE DoctrineDelayJob job SET job.processing = TRUE WHERE job.time < :now ORDER BY job.time $orderDir LIMIT :limit",
+                [
+                    'now' => $now,
+                    'limit' => $this->batchSize
+                ], [
+                    'now' => Type::getType(Type::DATETIME),
+                    'limit' => Type::getType(Type::INTEGER)
+                ]);
 
-        $jobs = $repo->createQueryBuilder('job')
-            ->andWhere('job.processing = true')
-            ->getQuery()
-            ->getResult();
+            $jobs = $repo->createQueryBuilder('job')
+                ->andWhere('job.processing = true')
+                ->getQuery()
+                ->getResult();
 
-        $repo->createQueryBuilder('job')
-            ->delete()
-            ->andWhere('job.processing = true')
-            ->getQuery()
-            ->execute();
+            $repo->createQueryBuilder('job')
+                ->delete()
+                ->andWhere('job.processing = true')
+                ->getQuery()
+                ->execute();
 
-        $em->getConnection()->commit();
+            $em->getConnection()->commit();
 
-        return array_map(function(DoctrineDelayJob $job) {
-            return new WorkerJob($job);
-        }, $jobs);
+            return array_map(function (DoctrineDelayJob $job) {
+                return new WorkerJob($job);
+            }, $jobs);
+        } catch (DriverException $e) {
+            if ($e->getErrorCode() == 1213) { //Deadlock found when trying to get lock;
+                $em->rollback();
+                throw new UnexpectedJobDataException('Deadlock trying to lock table', 0, $e);
+            }
+        }
     }
 
     protected function finishJobs(array $okJobs, array $retryJobs, array $failedJobs)
