@@ -24,6 +24,8 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
      */
     private $batchSize = 20;
 
+    private $reverse = false;
+
     public function __construct($name, array $options, QueueManager $queueManager)
     {
         parent::__construct($name, $options, $queueManager);
@@ -34,7 +36,8 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
     {
         parent::configure();
         $this
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 20);
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 20)
+            ->addOption('reverse', null, InputOption::VALUE_NONE, 'Fetch jobs from the database in reverse order (newest first)');
     }
 
     /**
@@ -50,7 +53,9 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
 
         $repo = $em->getRepository(DoctrineDelayJob::class);
 
-        $em->getConnection()->executeUpdate('UPDATE DoctrineDelayJob job SET job.processing = TRUE WHERE job.time < :now ORDER BY job.time ASC LIMIT :limit', [
+        $orderDir = $this->reverse ? 'DESC' : 'ASC';
+
+        $em->getConnection()->executeUpdate("UPDATE DoctrineDelayJob job SET job.processing = TRUE WHERE job.time < :now ORDER BY job.time $orderDir LIMIT :limit", [
             'now' => $now,
             'limit' => $this->batchSize
         ], [
@@ -99,5 +104,6 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
         if (($batch = $input->getOption('batch-size'))) {
             $this->batchSize = (int) $batch;
         }
+        $this->reverse = $input->getOption('reverse');
     }
 }
