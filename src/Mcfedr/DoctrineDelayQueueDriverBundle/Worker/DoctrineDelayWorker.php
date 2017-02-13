@@ -1,7 +1,5 @@
 <?php
-/**
- * Created by mcfedr on 7/28/16 09:28
- */
+
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Worker;
 
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
@@ -22,9 +20,10 @@ class DoctrineDelayWorker implements Worker
     }
 
     /**
-     * Called to start the queued task
+     * Called to start the queued task.
      *
      * @param array $arguments
+     *
      * @throws \Exception
      * @throws UnrecoverableJobException
      */

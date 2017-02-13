@@ -1,31 +1,36 @@
 <?php
-/**
- * Created by mcfedr on 04/02/2016 10:22
- */
 
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Tests\Manager;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayQueueManager;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
+use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayQueueManager;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 use Symfony\Component\DependencyInjection\Container;
 
 class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var DoctrineDelayQueueManager */
+    /**
+     * @var DoctrineDelayQueueManager
+     */
     private $manager;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|EntityRepository
+     */
     private $repo;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|EntityManager
+     */
     private $entityManager;
 
-    /** @var Container */
+    /**
+     * @var Container
+     */
     private $container;
 
     public function setUp()

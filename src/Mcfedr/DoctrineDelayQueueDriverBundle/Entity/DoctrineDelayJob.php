@@ -1,11 +1,8 @@
 <?php
-/**
- * Created by mcfedr on 7/28/16 09:16
- */
+
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 
 /**
@@ -18,7 +15,7 @@ use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 class DoctrineDelayJob implements RetryableJob
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -83,10 +80,10 @@ class DoctrineDelayJob implements RetryableJob
     private $retryCount;
 
     /**
-     * @param string $name
-     * @param array $arguments
-     * @param array $options
-     * @param string $manager
+     * @param string    $name
+     * @param array     $arguments
+     * @param array     $options
+     * @param string    $manager
      * @param \DateTime $time
      */
     public function __construct($name, array $arguments, array $options, $manager, \DateTime $time, $retryCount = 0)
@@ -157,7 +154,7 @@ class DoctrineDelayJob implements RetryableJob
     }
 
     /**
-     * Used to count retries
+     * Used to count retries.
      *
      * @return int
      */

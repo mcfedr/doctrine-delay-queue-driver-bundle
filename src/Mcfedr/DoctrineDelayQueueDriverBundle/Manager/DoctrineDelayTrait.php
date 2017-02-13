@@ -1,7 +1,5 @@
 <?php
-/**
- * Created by mcfedr on 7/28/16 10:18
- */
+
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Manager;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -37,6 +35,7 @@ trait DoctrineDelayTrait
         if (!$this->doctrine) {
             $this->doctrine = $this->container->get('doctrine');
         }
+
         return $this->doctrine->getManager($this->entityManagerName);
     }
 

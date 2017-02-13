@@ -24,11 +24,12 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
     }
 
     /**
-     * Put a new job on a queue
+     * Put a new job on a queue.
      *
-     * @param string $name The service name of the worker that implements {@link \Mcfedr\QueueManagerBundle\Queue\Worker}
-     * @param array $arguments Arguments to pass to execute - must be json serializable
-     * @param array $options Options for creating the job - these depend on the driver used
+     * @param string $name      The service name of the worker that implements {@link \Mcfedr\QueueManagerBundle\Queue\Worker}
+     * @param array  $arguments Arguments to pass to execute - must be json serializable
+     * @param array  $options   Options for creating the job - these depend on the driver used
+     *
      * @return Job
      */
     public function put($name, array $arguments = [], array $options = [])
@@ -52,7 +53,7 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
                 $jobTime = clone $jobTime;
                 $jobTime->setTimezone(new \DateTimeZone('UTC'));
             }
-        } else if (isset($options['delay'])) {
+        } elseif (isset($options['delay'])) {
             $jobTime = new \DateTime("+{$options['delay']} seconds", new \DateTimeZone('UTC'));
         } else {
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
@@ -68,9 +69,10 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
     }
 
     /**
-     * Remove a job from the queue
+     * Remove a job from the queue.
      *
      * @param $job
+     *
      * @throws WrongJobException
      * @throws NoSuchJobException
      */
@@ -88,6 +90,4 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
         $em->remove($job);
         $em->flush($job);
     }
-
-
 }

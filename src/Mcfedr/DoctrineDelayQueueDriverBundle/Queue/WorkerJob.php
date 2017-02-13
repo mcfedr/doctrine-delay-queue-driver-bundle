@@ -1,7 +1,5 @@
 <?php
-/**
- * Created by mcfedr on 7/28/16 10:29
- */
+
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Queue;
 
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;

@@ -1,13 +1,11 @@
 <?php
-/**
- * Created by mcfedr on 7/28/16 09:18
- */
+
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Command;
 
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Types\Type;
-use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayTrait;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
+use Mcfedr\DoctrineDelayQueueDriverBundle\Manager\DoctrineDelayTrait;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Queue\WorkerJob;
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
@@ -43,6 +41,7 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
 
     /**
      * @throws UnexpectedJobDataException
+     *
      * @return Job
      */
     protected function getJobs()
