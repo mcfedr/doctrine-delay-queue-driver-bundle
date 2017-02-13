@@ -16,9 +16,6 @@ class DoctrineDelayWorker implements Worker
      */
     private $queueManagerRegistry;
 
-    /**
-     * @param QueueManagerRegistry $queueManagerRegistry
-     */
     public function __construct(QueueManagerRegistry $queueManagerRegistry)
     {
         $this->queueManagerRegistry = $queueManagerRegistry;

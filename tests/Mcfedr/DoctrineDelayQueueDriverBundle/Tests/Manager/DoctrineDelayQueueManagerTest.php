@@ -33,7 +33,9 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager = new DoctrineDelayQueueManager([
             'entity_manager' => null,
             'default_manager' => 'default',
-            'default_manager_options' => []
+            'default_manager_options' => [
+                'manager_option_a' => 'a'
+            ]
         ]);
 
         $this->repo = $this->getMockBuilder(EntityRepository::class)->disableOriginalConstructor()->getMock();
@@ -65,9 +67,14 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('flush');
 
-        $job = $this->manager->put('test_worker', [], ['time' => new \DateTime()]);
+        $job = $this->manager->put('test_worker', [
+            'argument_a' => 'a'
+        ], ['time' => new \DateTime()]);
 
         $this->assertEquals('test_worker', $job->getName());
+        $this->assertEquals([
+            'argument_a' => 'a'
+        ], $job->getArguments());
     }
 
     public function testPutFast()
@@ -78,12 +85,18 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
         $registry
             ->expects($this->once())
             ->method('put')
-            ->with('test_worker', [])
+            ->with('test_worker', [
+                'argument_a' => 'a'
+            ], [
+                'manager_option_a' => 'a'
+            ], 'default')
             ->willReturn($job);
 
         $this->container->set('mcfedr_queue_manager.registry', $registry);
 
-        $putJob = $this->manager->put('test_worker', []);
+        $putJob = $this->manager->put('test_worker', [
+            'argument_a' => 'a'
+        ]);
 
         $this->assertEquals($job, $putJob);
     }
