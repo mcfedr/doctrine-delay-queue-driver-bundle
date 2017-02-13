@@ -8,6 +8,7 @@ It currently **only** works with MySQL as a native query is required to find job
 
 [![Latest Stable Version](https://poser.pugx.org/mcfedr/doctrine-delay-queue-driver-bundle/v/stable.png)](https://packagist.org/packages/mcfedr/doctrine-delay-queue-driver-bundle)
 [![License](https://poser.pugx.org/mcfedr/doctrine-delay-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/doctrine-delay-queue-driver-bundle)
+[![Build Status](https://travis-ci.org/mcfedr/doctrine-delay-queue-driver-bundle.svg?branch=master)](https://travis-ci.org/mcfedr/doctrine-delay-queue-driver-bundle)
 
 ## Install
 
