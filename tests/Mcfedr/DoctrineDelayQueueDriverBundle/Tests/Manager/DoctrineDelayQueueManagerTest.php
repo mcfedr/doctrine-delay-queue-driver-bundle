@@ -108,7 +108,8 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testDelete()
     {
-        $toDelete = new DoctrineDelayJob('test_worker', [], [], 'default', new \DateTime());
+        $toDelete = $this->getMockBuilder(DoctrineDelayJob::class)->setConstructorArgs(['test_worker', [], [], 'default', new \DateTime()])->getMock();
+        $toDelete->method('getId')->willReturn(1);
 
         $this->entityManager
             ->expects($this->once())
@@ -165,5 +166,15 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
     public function testDeleteOther()
     {
         $this->manager->delete($this->getMockBuilder(Job::class)->getMock());
+    }
+
+    /**
+     * @expectedException \Mcfedr\QueueManagerBundle\Exception\NoSuchJobException
+     */
+    public function testNonPersisted()
+    {
+        $toDelete = new DoctrineDelayJob('test_worker', [], [], 'default', new \DateTime());
+
+        $this->manager->delete($toDelete);
     }
 }

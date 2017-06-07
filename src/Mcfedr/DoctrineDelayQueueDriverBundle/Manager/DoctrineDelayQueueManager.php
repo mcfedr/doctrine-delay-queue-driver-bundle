@@ -84,6 +84,10 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
 
         $em = $this->getEntityManager();
         if (!$em->contains($job)) {
+            if (!$job->getId()) {
+                throw new NoSuchJobException('Doctrine delay queue manager cannot delete a job that hasnt been persisted');
+            }
+
             $job = $em->getReference(DoctrineDelayJob::class, $job->getId());
         }
 
