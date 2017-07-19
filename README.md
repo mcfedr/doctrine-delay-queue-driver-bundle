@@ -10,6 +10,18 @@ It currently **only** works with MySQL as a native query is required to find job
 [![License](https://poser.pugx.org/mcfedr/doctrine-delay-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/doctrine-delay-queue-driver-bundle)
 [![Build Status](https://travis-ci.org/mcfedr/doctrine-delay-queue-driver-bundle.svg?branch=master)](https://travis-ci.org/mcfedr/doctrine-delay-queue-driver-bundle)
 
+## Usage
+
+You should run the daemon for delay in addition to any other daemons you are using.
+This runner simply moves jobs from Doctrine into your other job queues. Because its 
+not doing much work generally a single instance can cope with a high number of jobs.
+
+```bash
+./bin/console mcfedr:queue:{name}-runner
+```
+
+Where `{name}` is what you used in the config. Add `-v` or more to get detailed logs.
+
 ## Install
 
 ### Composer
