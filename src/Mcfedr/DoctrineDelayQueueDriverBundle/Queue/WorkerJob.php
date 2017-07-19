@@ -34,7 +34,7 @@ class WorkerJob implements RetryableJob
     public function getArguments()
     {
         return [
-            'job' => $this->delayJob
+            'job' => $this->delayJob,
         ];
     }
 

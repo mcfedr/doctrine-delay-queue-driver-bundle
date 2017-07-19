@@ -59,10 +59,10 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
             $em->getConnection()->executeUpdate("UPDATE DoctrineDelayJob job SET job.processing = TRUE WHERE job.time < :now ORDER BY job.time $orderDir LIMIT :limit",
                 [
                     'now' => $now,
-                    'limit' => $this->batchSize
+                    'limit' => $this->batchSize,
                 ], [
                     'now' => Type::getType(Type::DATETIME),
-                    'limit' => Type::getType(Type::INTEGER)
+                    'limit' => Type::getType(Type::INTEGER),
                 ]);
 
             $jobs = $repo->createQueryBuilder('job')

@@ -25,7 +25,7 @@ class McfedrDoctrineDelayQueueDriverExtension extends Extension implements Prepe
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
 
@@ -47,11 +47,11 @@ class McfedrDoctrineDelayQueueDriverExtension extends Extension implements Prepe
                         'options' => [
                             'entity_manager' => null,
                             'default_manager' => null,
-                            'default_manager_options' => []
+                            'default_manager_options' => [],
                         ],
-                        'command_class' => DoctrineDelayRunnerCommand::class
-                    ]
-                ]
+                        'command_class' => DoctrineDelayRunnerCommand::class,
+                    ],
+                ],
             ]);
         }
     }
