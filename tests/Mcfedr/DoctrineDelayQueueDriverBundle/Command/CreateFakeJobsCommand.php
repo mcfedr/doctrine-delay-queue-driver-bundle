@@ -35,9 +35,9 @@ class CreateFakeJobsCommand extends Command
 
         for ($i = 0; $i < $jobsCount; ++$i) {
             $this->queueManagerRegistry->put('test_worker', [
-                'job' => $i
+                'job' => $i,
             ], [
-                'delay' => 10
+                'delay' => 10,
             ], 'delay');
             $output->writeln("Job $i");
         }
