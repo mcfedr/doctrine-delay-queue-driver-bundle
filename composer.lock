@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "36bdda13287c7138d96aab1b0e924e84",
+    "content-hash": "c511cd6a18b12b81ff2d7a330b46db05",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -880,16 +880,16 @@
         },
         {
             "name": "mcfedr/queue-manager-bundle",
-            "version": "5.6.0",
+            "version": "5.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mcfedr/queue-manager-bundle.git",
-                "reference": "a9ee02fe92d0f6d28eea6a996c5cbda7d061eb9e"
+                "reference": "c51d1978e20d0c2c9d9feaea21bace0fe1a3e69e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mcfedr/queue-manager-bundle/zipball/a9ee02fe92d0f6d28eea6a996c5cbda7d061eb9e",
-                "reference": "a9ee02fe92d0f6d28eea6a996c5cbda7d061eb9e",
+                "url": "https://api.github.com/repos/mcfedr/queue-manager-bundle/zipball/c51d1978e20d0c2c9d9feaea21bace0fe1a3e69e",
+                "reference": "c51d1978e20d0c2c9d9feaea21bace0fe1a3e69e",
                 "shasum": ""
             },
             "require": {
@@ -934,7 +934,7 @@
                 "schedule",
                 "task"
             ],
-            "time": "2017-09-28T13:46:39+00:00"
+            "time": "2017-09-28T13:55:15+00:00"
         },
         {
             "name": "paragonie/random_compat",

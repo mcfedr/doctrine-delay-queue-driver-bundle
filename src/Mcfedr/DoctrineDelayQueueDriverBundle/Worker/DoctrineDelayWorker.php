@@ -5,9 +5,10 @@ namespace Mcfedr\DoctrineDelayQueueDriverBundle\Worker;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
+use Mcfedr\QueueManagerBundle\Queue\InternalWorker;
 use Mcfedr\QueueManagerBundle\Queue\Worker;
 
-class DoctrineDelayWorker implements Worker
+class DoctrineDelayWorker implements InternalWorker
 {
     /**
      * @var QueueManagerRegistry

@@ -13,7 +13,7 @@
     "require": {
         "php": ">=5.5",
         "symfony/symfony": "^2.8|^3.0",
-        "mcfedr/queue-manager-bundle": "^5.2",
+        "mcfedr/queue-manager-bundle": "^5.6.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "symfony/proxy-manager-bridge": "^3.3"
