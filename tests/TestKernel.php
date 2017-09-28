@@ -11,6 +11,7 @@ class TestKernel extends Symfony\Component\HttpKernel\Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Mcfedr\QueueManagerBundle\McfedrQueueManagerBundle(),
             new Mcfedr\DoctrineDelayQueueDriverBundle\McfedrDoctrineDelayQueueDriverBundle(),
+            new \Mcfedr\SqsQueueDriverBundle\McfedrSqsQueueDriverBundle(),
         ];
     }
 
