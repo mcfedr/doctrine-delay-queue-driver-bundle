@@ -1,3 +1,6 @@
+imports:
+    - { resource: parameters.yml }
+
 framework:
     test: ~
     session:
@@ -6,12 +9,16 @@ framework:
 
 doctrine:
     dbal:
-        driver: pdo_sqlite
-        dbname: "doctrine_delay"
-        charset: UTF8
+        driver:   '%database_driver%'
+        host:     '%database_host%'
+        port:     '%database_port%'
+        dbname:   '%database_name%'
+        user:     '%database_user%'
+        password: '%database_password%'
+        charset:  '%database_charset%'
+        path:     '%database_path%'
         mapping_types:
             enum: string
-        path: "%kernel.root_dir%/cache/test/db.sqlite"
         logging: false
         profiling: false
     orm:
@@ -20,20 +27,34 @@ doctrine:
 
 mcfedr_queue_manager:
     managers:
-        default:
+        delay:
             driver: doctrine_delay
+
+        default:
+            driver: sqs
             options:
-                debug: true
+                default_url: '%sqs_default_queue%'
+                region: eu-west-1
+                credentials:
+                    key: '%aws_key%'
+                    secret: '%aws_secret%'
 
 monolog:
     handlers:
         main:
             type: console
-            verbosity_levels:
-                VERBOSITY_NORMAL: DEBUG
+#            verbosity_levels:
+#                VERBOSITY_NORMAL: DEBUG
 
 services:
     test_worker:
         class: Mcfedr\DoctrineDelayQueueDriverBundle\Worker\TestWorker
         arguments:
             - "@logger"
+
+    test_create_fake_jobs:
+        class: Mcfedr\DoctrineDelayQueueDriverBundle\Command\CreateFakeJobsCommand
+        arguments:
+            - "@mcfedr_queue_manager.registry"
+        tags:
+            - { name: console.command }
