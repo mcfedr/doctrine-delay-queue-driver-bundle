@@ -3,6 +3,7 @@
 namespace Mcfedr\DoctrineDelayQueueDriverBundle\Queue;
 
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
+use Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 
@@ -28,7 +29,7 @@ class WorkerJob implements RetryableJob
 
     public function getName()
     {
-        return 'mcfedr_doctrine_delay_queue_driver.worker';
+        return DoctrineDelayWorker::class;
     }
 
     public function getArguments()

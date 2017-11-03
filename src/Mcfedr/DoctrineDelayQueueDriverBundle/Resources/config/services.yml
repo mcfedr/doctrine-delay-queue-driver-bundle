@@ -1,5 +1,8 @@
 services:
-    mcfedr_doctrine_delay_queue_driver.worker:
+    Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker:
         class: Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker
         arguments:
             - "@mcfedr_queue_manager.registry"
+
+    mcfedr_doctrine_delay_queue_driver.worker:
+        alias: Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker
