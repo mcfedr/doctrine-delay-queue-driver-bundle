@@ -49,7 +49,7 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
         if (isset($options['time'])) {
             /** @var \DateTime $jobTime */
             $jobTime = $options['time'];
-            if ($jobTime->getTimezone()->getName() != 'UTC') {
+            if ('UTC' != $jobTime->getTimezone()->getName()) {
                 $jobTime = clone $jobTime;
                 $jobTime->setTimezone(new \DateTimeZone('UTC'));
             }
