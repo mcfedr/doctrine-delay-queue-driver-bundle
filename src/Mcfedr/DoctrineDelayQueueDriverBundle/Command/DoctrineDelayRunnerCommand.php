@@ -82,7 +82,7 @@ class DoctrineDelayRunnerCommand extends RunnerCommand
                 return new WorkerJob($job);
             }, $jobs);
         } catch (DriverException $e) {
-            if ($e->getErrorCode() == 1213) { //Deadlock found when trying to get lock;
+            if (1213 == $e->getErrorCode()) { //Deadlock found when trying to get lock;
                 $em->rollback();
                 throw new UnexpectedJobDataException('Deadlock trying to lock table', 0, $e);
             }

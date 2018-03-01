@@ -7,7 +7,7 @@ parameters:
     database_user: ~
     database_password: ~
     database_charset: UTF8
-    database_path: %kernel.root_dir%/cache/test/db.sqlite
+    database_path: '%kernel.root_dir%/cache/test/db.sqlite'
     aws_key: ~
     aws_secret: ~
     sqs_default_queue: ~
