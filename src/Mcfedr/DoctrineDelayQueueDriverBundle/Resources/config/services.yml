@@ -1,5 +1,6 @@
 services:
     Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker:
+        public: true
         class: Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker
         arguments:
             - "@mcfedr_queue_manager.registry"
