@@ -62,7 +62,7 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager->setContainer($this->container);
     }
 
-    public function testPut()
+    public function testPutWithSignificantDelay()
     {
         $this->entityManager
             ->expects($this->once())
@@ -74,12 +74,50 @@ class DoctrineDelayQueueManagerTest extends \PHPUnit_Framework_TestCase
 
         $job = $this->manager->put('test_worker', [
             'argument_a' => 'a',
-        ], ['time' => new \DateTime()]);
+        ], ['time' => new \DateTime('+1 minute')]);
 
         $this->assertEquals('test_worker', $job->getName());
         $this->assertEquals([
             'argument_a' => 'a',
         ], $job->getArguments());
+    }
+
+    /**
+     * @dataProvider getNotSignificantDelayAndTimeInPastJobTimes
+     *
+     * @param $jobTime
+     *
+     * @throws \Exception
+     */
+    public function testPutWithNotSignificantDelayAndTimeInPast($jobTime)
+    {
+        $job = $this->getMockBuilder(Job::class)->getMock();
+
+        $registry = $this->getMockBuilder(QueueManagerRegistry::class)->disableOriginalConstructor()->getMock();
+        $registry
+            ->expects($this->once())
+            ->method('put')
+            ->with('test_worker', [
+                'argument_a' => 'a',
+            ], [
+                'manager_option_a' => 'a',
+            ], 'default')
+            ->willReturn($job);
+        $this->container->set('mcfedr_queue_manager.registry', $registry);
+
+        $putJob = $this->manager->put('test_worker', [
+            'argument_a' => 'a',
+        ], ['time' => $jobTime]);
+
+        $this->assertEquals($job, $putJob);
+    }
+
+    public function getNotSignificantDelayAndTimeInPastJobTimes()
+    {
+        return [
+            [new \DateTime('+12 seconds')],
+            [new \DateTime('-12 seconds')],
+        ];
     }
 
     public function testPutFast()
