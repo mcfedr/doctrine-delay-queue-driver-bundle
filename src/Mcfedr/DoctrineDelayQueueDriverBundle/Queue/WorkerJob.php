@@ -4,7 +4,6 @@ namespace Mcfedr\DoctrineDelayQueueDriverBundle\Queue;
 
 use Mcfedr\DoctrineDelayQueueDriverBundle\Entity\DoctrineDelayJob;
 use Mcfedr\DoctrineDelayQueueDriverBundle\Worker\DoctrineDelayWorker;
-use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 
 class WorkerJob implements RetryableJob

@@ -55,7 +55,9 @@ class DoctrineDelayQueueManager implements QueueManager, ContainerAwareInterface
             }
         } elseif (isset($options['delay'])) {
             $jobTime = new \DateTime("+{$options['delay']} seconds", new \DateTimeZone('UTC'));
-        } else {
+        }
+
+        if (!isset($jobTime) || $jobTime < new \DateTime('+30 seconds', new \DateTimeZone('UTC'))) {
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }
 
