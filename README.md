@@ -65,8 +65,9 @@ This will create a `QueueManager` service named `"mcfedr_queue_manager.delay"`
 * `manager` - Use a different job processor for this job
 * `manager_options` - Options to pass to the processors `put` method
 
-##### Note
-If 'delay' or 'time' option is less then 30 seconds the job will be scheduled for immediate execution
+### Note
+
+If `delay` or `time` option is less then 30 seconds the job will be scheduled for immediate execution
 
 ## Tables
 
