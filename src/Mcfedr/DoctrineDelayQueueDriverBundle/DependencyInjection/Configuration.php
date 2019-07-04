@@ -17,8 +17,12 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('mcfedr_doctrine_delay_queue_driver');
+        if (Kernel::VERSION_ID >= 40200) {
+            $treeBuilder = new TreeBuilder('mcfedr_doctrine_delay_queue_driver');
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $builder->root('mcfedr_doctrine_delay_queue_driver');
+        }
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
